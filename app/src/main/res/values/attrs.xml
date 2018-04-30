@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="OverlappingImageView">
+        <attr name="itemWidth" format="dimension" />
+        <attr name="itemHeight" format="dimension" />
+        <attr name="itemBorderWidth" format="dimension" />
+        <attr name="maxItemCount" format="integer" />
+        <attr name="offset" format="float" />
+        <attr name="itemBorderColor" format="color" />
+
+    </declare-styleable>
+</resources>

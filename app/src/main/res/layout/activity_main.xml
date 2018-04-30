@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context="com.sasuke.overlappingimageview.MainActivity">
+
+    <com.sasuke.overlappingimageview.OverlappingImageView
+        android:id="@+id/oiv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:itemBorderColor="@color/colorPrimaryDark"
+        app:itemBorderWidth="4dp"
+        app:itemHeight="200dp"
+        app:itemWidth="200dp"
+        app:maxItemCount="20"
+        app:offset="0.5" />
+</RelativeLayout>
