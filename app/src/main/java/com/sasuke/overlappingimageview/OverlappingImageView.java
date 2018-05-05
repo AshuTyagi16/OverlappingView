@@ -46,12 +46,6 @@ public class OverlappingImageView extends HorizontalScrollView {
 
     private LinearLayout linearLayout;
 
-    private int _yDelta;
-
-    private float dX, dY;
-
-    private boolean isBlockedScrollView;
-
     public OverlappingImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
@@ -70,75 +64,12 @@ public class OverlappingImageView extends HorizontalScrollView {
             typedArray.recycle();
         }
 
-
         setHorizontalScrollBarEnabled(false);
-//        disabelScrollView();
         linearLayout = new LinearLayout(context);
         linearLayout.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         addView(linearLayout);
 
-    }
-
-
-    private void enableScrollView() {
-        setOnTouchListener(null);
-    }
-
-    private void disabelScrollView() {
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-    }
-
-    private final class ChoiceTouchListener implements OnTouchListener {
-        public boolean onTouch(final View view, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    dY = view.getY() - event.getRawY();
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-                    
-                    Log.d("onTouch", "view.getY: " + view.getY());
-                    Log.d("onTouch", "event.getY: " + event.getY());
-                    Log.d("onTouch", "event.getRawY: " + event.getRawY());
-
-                    view.animate()
-                            .y(event.getRawY() + dY)
-                            .alpha(0.0f)
-                            .setDuration(300)
-                            .withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    (linearLayout).removeView(view);
-                                    linearLayout.invalidate();
-
-                                }
-                            })
-                            .start();
-
-//                    if (view.getY() >= mItemHeight / 2) {
-//
-//                    } else if (view.getY() <= -mItemHeight / 2) {
-//                        (linearLayout).removeView(view);
-//                        linearLayout.invalidate();
-//                    } else {
-//                        view.animate()
-//                                .alpha(1.0f)
-//                                .setDuration(0)
-//                                .start();
-//                    }
-                    break;
-
-                default:
-                    break;
-            }
-            return true;
-        }
     }
 
     public void setThumbnailUrl(ArrayList<String> imageUrlList) {
@@ -157,19 +88,7 @@ public class OverlappingImageView extends HorizontalScrollView {
                     Picasso.get().load(url).placeholder(R.drawable.ic_launcher_background).into(circleImageView);
                     linearLayout.addView(circleImageView);
 
-                    circleImageView.setOnTouchListener(new ChoiceTouchListener());
-//                    circleImageView.setOnDragListener(new OnDragListener() {
-//                        @Override
-//                        public boolean onDrag(View view, DragEvent dragEvent) {
-//                            switch (dragEvent.getAction()) {
-//                                case DragEvent.ACTION_DRAG_LOCATION:
-//                                    break;
-//                            }
-//                            (linearLayout).removeView(view);
-//                            linearLayout.invalidate();
-//                            return false;
-//                        }
-//                    });
+                    circleImageView.setOnTouchListener(new OnSwipeTouchListener(getContext()));
                 }
             }
         }
@@ -234,6 +153,77 @@ public class OverlappingImageView extends HorizontalScrollView {
                 }
             }
         }
+    }
+
+    private class OnSwipeTouchListener implements OnTouchListener {
+
+        private final GestureDetector gestureDetector;
+        private View view;
+
+        public OnSwipeTouchListener(Context ctx) {
+            gestureDetector = new GestureDetector(ctx, new GestureListener());
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            this.view = v;
+            return gestureDetector.onTouchEvent(event);
+        }
+
+        private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+            private static final int SWIPE_THRESHOLD = 100;
+            private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                boolean result = false;
+                try {
+                    float diffY = e2.getY() - e1.getY();
+                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffY > 0) {
+                            view.animate()
+                                    .y(e2.getRawY() + mItemWidth)
+                                    .alpha(0.0f)
+                                    .setDuration(300)
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            (linearLayout).removeView(view);
+                                            linearLayout.invalidate();
+
+                                        }
+                                    })
+                                    .start();
+                        } else {
+                            view.animate()
+                                    .y(mItemWidth - e2.getRawY())
+                                    .alpha(0.0f)
+                                    .setDuration(300)
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            (linearLayout).removeView(view);
+                                            linearLayout.invalidate();
+
+                                        }
+                                    })
+                                    .start();
+                        }
+                        result = true;
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                return result;
+            }
+        }
+
     }
 
 }
