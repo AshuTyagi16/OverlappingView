@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         overlappingImageView = (OverlappingImageView) findViewById(R.id.oiv);
-        overlappingImageView.setThumbnailUrl(getDummyUrls());
+        overlappingImageView.setThumbnailUrl(getDummyUrls(), false);
     }
 
     private ArrayList<String> getDummyUrls() {
