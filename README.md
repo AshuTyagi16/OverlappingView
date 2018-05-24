@@ -18,7 +18,7 @@ Circular Image Views that overlap over one another. <br />
         app:maxItemCount="20" <br />
         app:offset="0.5" /> <br />
 
-#Attributes <br />
+<b>Attributes</b> <br />
 
 itemBorderColor -> Border color of circular image view <br />
 itemBorderWidth -> Border width of circular image view <br />
@@ -35,7 +35,7 @@ if (offset == 0) -> All the items will arrange side by side <br />
 
 similarly you can play with the offset value according to your need. <br />
 
-#How to Load Images <br />
+<b>How to Load Images</b> <br />
 
 You can use any of the following functions to load the image: <br /> 
 
